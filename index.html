@@ -3,33 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>easy-учёт — Порядок в авторазборке без бухгалтера</title>
-    <meta name="description" content="Облачный сервис учёта для авторазборок. Найдем деталь за секунды, выставим цену по рынку и продадим на Авито. Старт бесплатно.">
-    
-    <!-- Шрифты -->
+    <title>easy-учёт — Порядок в авторазборке</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
-    
-    <!-- Иконки Material Icons Outlined -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
-
     <style>
         :root {
-            /* Фирменная палитра */
-            --primary-orange: #FF6B00;
-            --primary-orange-hover: #e65100;
-            --bg-black: #111111;
-            --bg-dark-gray: #1a1a1a;
-            --text-white: #ffffff;
-            --text-black: #111111;
+            --primary: #FF6B00; /* Фирменный оранжевый */
+            --primary-hover: #e65c00;
+            --dark: #111111;
+            --gray: #F4F4F4;
             --text-gray: #666666;
-            --bg-light: #f9f9f9;
-            
-            --radius-md: 12px;
-            --radius-lg: 20px;
-            --shadow-card: 0 10px 30px rgba(0,0,0,0.08);
-            --shadow-orange: 0 10px 20px rgba(255, 107, 0, 0.3);
+            --white: #FFFFFF;
+            --radius: 16px;
+            --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
         * {
@@ -40,688 +28,407 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            color: var(--text-black);
-            background-color: var(--text-white);
+            background-color: var(--white);
+            color: var(--dark);
             line-height: 1.6;
             overflow-x: hidden;
         }
 
-        h1, h2, h3, h4 {
-            font-family: 'Oswald', sans-serif; /* Более брутальный шрифт для заголовков */
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        /* --- Animations --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s ease-out;
         }
 
-        a { text-decoration: none; color: inherit; transition: 0.3s; }
-        ul { list-style: none; }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
+        .stagger-delay:nth-child(1) { transition-delay: 0.1s; }
+        .stagger-delay:nth-child(2) { transition-delay: 0.2s; }
+        .stagger-delay:nth-child(3) { transition-delay: 0.3s; }
+        .stagger-delay:nth-child(4) { transition-delay: 0.4s; }
+
+        /* --- Layout --- */
         .container {
-            max-width: 1200px;
+            max-width: 1100px;
             margin: 0 auto;
             padding: 0 20px;
         }
 
-        /* КНОПКИ */
-        .btn {
-            display: inline-block;
-            padding: 16px 32px;
-            font-weight: 700;
-            font-size: 1.1rem;
-            border-radius: var(--radius-md);
-            cursor: pointer;
+        section {
+            padding: 100px 0;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
             text-align: center;
-            border: none;
-            transition: all 0.3s ease;
-            font-family: 'Oswald', sans-serif;
-            letter-spacing: 1px;
+            margin-bottom: 60px;
+            letter-spacing: -0.03em;
         }
 
-        .btn-primary {
-            background-color: var(--primary-orange);
-            color: var(--text-white);
-            box-shadow: var(--shadow-orange);
+        span.highlight {
+            color: var(--primary);
         }
 
-        .btn-primary:hover {
-            background-color: var(--primary-orange-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 15px 30px rgba(255, 107, 0, 0.4);
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 2px solid var(--text-white);
-            color: var(--text-white);
-        }
-
-        .btn-outline:hover {
-            background: var(--text-white);
-            color: var(--bg-black);
-        }
-
-        .btn-black {
-            background-color: var(--bg-black);
-            color: var(--text-white);
-        }
-        
-        .btn-black:hover {
-            background-color: #333;
-            transform: translateY(-2px);
-        }
-
-        /* HEADER */
+        /* --- Header --- */
         header {
-            background-color: var(--bg-black);
             padding: 20px 0;
-            position: sticky;
+            position: fixed;
+            width: 100%;
             top: 0;
-            z-index: 1000;
-            border-bottom: 4px solid var(--primary-orange);
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
         }
 
-        .header-content {
+        .nav-wrapper {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
         .logo img {
-            height: 50px; /* Адаптируйте высоту под ваш логотип */
+            height: 40px;
             width: auto;
             display: block;
         }
 
-        nav ul {
-            display: flex;
-            gap: 30px;
-        }
-
-        nav a {
-            color: var(--text-white);
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-
-        nav a:hover {
-            color: var(--primary-orange);
-        }
-
-        .mobile-menu-btn {
-            display: none;
-            color: white;
-            font-size: 32px;
-            cursor: pointer;
-        }
-
-        /* HERO SECTION */
-        .hero {
-            background-color: var(--bg-black);
-            color: var(--text-white);
-            padding: 100px 0;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -10%;
-            width: 800px;
-            height: 800px;
-            background: radial-gradient(circle, rgba(255,107,0,0.15) 0%, rgba(0,0,0,0) 70%);
-            border-radius: 50%;
-            z-index: 0;
-        }
-
-        .hero-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 60px;
-            align-items: center;
-            position: relative;
-            z-index: 1;
-        }
-
-        .hero-text h1 {
-            font-size: 3.5rem;
-            line-height: 1.1;
-            margin-bottom: 20px;
-        }
-
-        .hero-text h1 span {
-            color: var(--primary-orange);
-        }
-
-        .hero-text p {
-            font-size: 1.2rem;
-            color: #cccccc;
-            margin-bottom: 40px;
-            max-width: 500px;
-        }
-
-        .hero-badges {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        .badge {
-            background: rgba(255,255,255,0.1);
-            padding: 8px 16px;
+        .btn {
+            display: inline-block;
+            background: var(--dark);
+            color: var(--white);
+            padding: 14px 32px;
             border-radius: 50px;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            border: 1px solid rgba(255,255,255,0.2);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            border: 2px solid var(--dark);
         }
 
-        .badge span.material-icons-outlined {
-            color: var(--primary-orange);
-            font-size: 18px;
+        .btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 107, 0, 0.2);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--dark);
+            border: 2px solid var(--dark);
+        }
+
+        .btn-outline:hover {
+            background: var(--dark);
+            color: var(--white);
+        }
+
+        /* --- Hero --- */
+        .hero {
+            padding-top: 180px;
+            padding-bottom: 120px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            line-height: 1.1;
+            font-weight: 800;
+            margin-bottom: 24px;
+            letter-spacing: -0.04em;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-gray);
+            max-width: 600px;
+            margin: 0 auto 40px;
         }
 
         .hero-image {
-            position: relative;
-        }
-
-        .hero-mockup {
-            background: #222;
-            border-radius: var(--radius-lg);
-            padding: 20px;
-            border: 1px solid #333;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-            transform: perspective(1000px) rotateY(-5deg) rotateX(5deg);
-            transition: transform 0.5s ease;
-        }
-        
-        .hero-mockup:hover {
-            transform: perspective(1000px) rotateY(0) rotateX(0);
-        }
-
-        .mockup-screen {
-            background: #fff;
-            border-radius: 8px;
+            margin-top: 60px;
+            border-radius: var(--radius);
             overflow: hidden;
-            aspect-ratio: 16/10;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #333;
-            font-weight: bold;
-            font-size: 1.2rem;
-            position: relative;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            transform: perspective(1000px) rotateX(2deg);
+            transition: var(--transition);
         }
         
-        /* Имитация интерфейса внутри мокапа */
-        .mockup-ui {
+        .hero-image:hover {
+            transform: perspective(1000px) rotateX(0deg);
+        }
+
+        .hero-image img {
             width: 100%;
-            height: 100%;
-            background: #f4f4f4;
+            height: auto;
+            display: block;
+        }
+
+        /* --- Problems (Pain) --- */
+        .problems {
+            background: var(--gray);
+        }
+
+        .problems-grid {
             display: grid;
-            grid-template-rows: 40px 1fr;
-        }
-        .mockup-header { background: #ddd; display: flex; align-items: center; padding: 0 15px; gap: 10px; }
-        .mockup-dot { width: 10px; height: 10px; border-radius: 50%; background: #bbb; }
-        .mockup-body { padding: 20px; display: grid; grid-template-columns: 1fr 2fr; gap: 15px; }
-        .mockup-sidebar { background: #e0e0e0; border-radius: 6px; }
-        .mockup-content { display: grid; grid-template-rows: repeat(3, 1fr); gap: 10px; }
-        .mockup-card { background: white; border-radius: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); position: relative; overflow: hidden;}
-        .mockup-card-img { height: 60%; background: #eee; }
-        .mockup-card-info { padding: 10px; }
-        .mockup-line { height: 8px; background: #eee; border-radius: 4px; margin-bottom: 6px; width: 80%; }
-        .mockup-line.short { width: 50%; }
-        .price-tag { 
-            position: absolute; top: 10px; right: 10px; 
-            background: var(--primary-orange); color: white; 
-            padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
         }
 
-        /* PAIN POINTS (БОЛИ) */
-        .pain-section {
-            padding: 80px 0;
-            background: var(--bg-light);
+        .problem-card {
+            background: var(--white);
+            padding: 40px;
+            border-radius: var(--radius);
+            transition: var(--transition);
         }
 
-        .section-header {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-
-        .section-header h2 {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            color: var(--bg-black);
-        }
-
-        .section-header p {
-            font-size: 1.1rem;
-            color: var(--text-gray);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .pain-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-        }
-
-        .pain-card {
-            background: white;
-            padding: 40px 30px;
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-card);
-            border-top: 5px solid var(--bg-black);
-            transition: 0.3s;
-        }
-
-        .pain-card:hover {
+        .problem-card:hover {
             transform: translateY(-10px);
-            border-top-color: var(--primary-orange);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
         }
 
-        .pain-icon {
-            font-size: 48px;
-            color: var(--bg-black);
+        .problem-icon {
+            font-size: 40px;
+            color: var(--primary);
             margin-bottom: 20px;
         }
 
-        .pain-card h3 {
-            font-size: 1.4rem;
-            margin-bottom: 15px;
+        .problem-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 12px;
+            font-weight: 600;
         }
 
-        .pain-card p {
+        .problem-card p {
             color: var(--text-gray);
             font-size: 0.95rem;
         }
 
-        /* KILLER FEATURES */
-        .features-section {
-            padding: 100px 0;
-            background: var(--bg-black);
-            color: var(--text-white);
-        }
-
-        .features-section .section-header h2 {
-            color: var(--text-white);
-        }
-        
-        .features-section .section-header p {
-            color: #aaa;
-        }
-
-        .feature-row {
+        /* --- Features (Killer) --- */
+        .features-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 60px;
             align-items: center;
-            margin-bottom: 80px;
         }
 
-        .feature-row:nth-child(even) .feature-content {
-            order: 2;
+        .feature-item {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .feature-item.reverse {
+            direction: rtl; /* Simple way to swap order on desktop */
+        }
+        .feature-item.reverse .feature-text {
+            direction: ltr;
+            text-align: right;
+        }
+
+        .feature-visual {
+            background: var(--gray);
+            height: 300px;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #ddd;
+            position: relative;
+            overflow: hidden;
         }
         
-        .feature-row:nth-child(even) .feature-visual {
-            order: 1;
+        /* Placeholder visuals using CSS only for demo */
+        .visual-scan::before { content: "📱 + 🏷️"; filter: grayscale(1); }
+        .visual-price::before { content: "💰 📈"; filter: grayscale(1); }
+        .visual-avito::before { content: "🌐 🚀"; filter: grayscale(1); }
+
+        .feature-text h3 {
+            font-size: 1.8rem;
+            margin-bottom: 16px;
+            font-weight: 700;
         }
 
-        .feature-number {
-            font-family: 'Oswald', sans-serif;
-            font-size: 5rem;
-            color: rgba(255, 107, 0, 0.2);
-            line-height: 1;
-            margin-bottom: -20px;
-            display: block;
-        }
-
-        .feature-content h3 {
-            font-size: 2rem;
-            margin-bottom: 20px;
-            color: var(--primary-orange);
-        }
-
-        .feature-content p {
+        .feature-text p {
+            color: var(--text-gray);
             font-size: 1.1rem;
-            color: #ccc;
-            margin-bottom: 30px;
         }
 
-        .feature-list li {
+        /* --- All Features List --- */
+        .all-features {
+            background: var(--dark);
+            color: var(--white);
+        }
+
+        .all-features h2 {
+            color: var(--white);
+        }
+
+        .features-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 30px;
+        }
+
+        .f-item {
             display: flex;
             align-items: flex-start;
             gap: 15px;
-            margin-bottom: 15px;
-            color: #eee;
         }
 
-        .feature-list span.material-icons-outlined {
-            color: var(--primary-orange);
+        .f-item span.material-icons-outlined {
+            color: var(--primary);
             font-size: 24px;
             flex-shrink: 0;
         }
 
-        .feature-visual {
-            background: #222;
-            border-radius: var(--radius-lg);
-            padding: 30px;
-            border: 1px solid #333;
-            position: relative;
-        }
-        
-        /* Визуализация фич */
-        .visual-search {
-            background: white;
-            color: black;
-            padding: 20px;
-            border-radius: 8px;
-        }
-        .search-bar {
-            background: #f0f0f0;
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .search-input { flex: 1; height: 20px; background: #ddd; border-radius: 4px; }
-        .synonyms {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        .syn-tag {
-            background: #e3f2fd;
-            color: #1976d2;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-        .syn-tag.match {
-            background: #c8e6c9;
-            color: #2e7d32;
-        }
-
-        .visual-price {
-            background: white;
-            color: black;
-            padding: 20px;
-            border-radius: 8px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-        .part-card-mini {
-            border: 1px solid #eee;
-            padding: 10px;
-            border-radius: 6px;
-        }
-        .price-compare {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 10px;
-            font-size: 0.9rem;
-        }
-        .market-price { color: #d32f2f; font-weight: bold; }
-        .our-price { color: #388e3c; font-weight: bold; }
-
-        /* ALL FEATURES GRID */
-        .all-features {
-            padding: 100px 0;
-            background: var(--text-white);
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 30px;
-        }
-
-        .mini-feature {
-            padding: 30px;
-            border: 1px solid #eee;
-            border-radius: var(--radius-md);
-            transition: 0.3s;
-        }
-
-        .mini-feature:hover {
-            border-color: var(--primary-orange);
-            box-shadow: var(--shadow-card);
-        }
-
-        .mini-feature h4 {
-            font-size: 1.2rem;
-            margin: 15px 0 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .mini-feature h4 span.material-icons-outlined {
-            color: var(--primary-orange);
-            font-size: 24px;
-        }
-
-        .mini-feature p {
+        .f-item p {
             font-size: 0.95rem;
-            color: var(--text-gray);
+            opacity: 0.9;
         }
 
-        /* PRICING */
-        .pricing-section {
-            padding: 100px 0;
-            background: var(--bg-light);
-        }
-
+        /* --- Pricing --- */
         .pricing-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 30px;
-            align-items: flex-start;
         }
 
         .price-card {
-            background: white;
-            padding: 40px 30px;
-            border-radius: var(--radius-lg);
-            text-align: center;
             border: 1px solid #eee;
+            padding: 40px 30px;
+            border-radius: var(--radius);
+            text-align: center;
+            transition: var(--transition);
             position: relative;
-            transition: 0.3s;
         }
 
-        .price-card.popular {
-            border: 2px solid var(--primary-orange);
-            transform: scale(1.05);
-            box-shadow: 0 20px 40px rgba(255, 107, 0, 0.15);
+        .price-card:hover {
+            border-color: var(--primary);
+            transform: scale(1.03);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
             z-index: 2;
         }
 
-        .popular-badge {
+        .price-card.popular {
+            background: var(--dark);
+            color: var(--white);
+            border: none;
+            transform: scale(1.05);
+        }
+        
+        .price-card.popular:hover {
+            transform: scale(1.08);
+        }
+
+        .price-card.popular p, 
+        .price-card.popular .price-amount {
+            color: var(--white);
+        }
+        
+        .price-card.popular .price-currency {
+             color: rgba(255,255,255,0.7);
+        }
+
+        .badge {
             position: absolute;
-            top: -15px;
+            top: -12px;
             left: 50%;
             transform: translateX(-50%);
-            background: var(--primary-orange);
-            color: white;
-            padding: 5px 15px;
+            background: var(--primary);
+            color: var(--white);
+            padding: 4px 12px;
             border-radius: 20px;
             font-size: 0.8rem;
-            font-weight: 700;
+            font-weight: 600;
             text-transform: uppercase;
         }
 
-        .price-title {
-            font-size: 1.5rem;
-            font-weight: 700;
+        .plan-name {
+            font-size: 1.2rem;
+            font-weight: 600;
             margin-bottom: 10px;
-            font-family: 'Oswald', sans-serif;
-        }
-
-        .price-limit {
-            color: var(--text-gray);
-            font-size: 0.9rem;
-            margin-bottom: 20px;
-            min-height: 40px;
+            display: block;
         }
 
         .price-amount {
             font-size: 2.5rem;
             font-weight: 800;
-            color: var(--bg-black);
-            margin-bottom: 5px;
-            font-family: 'Oswald', sans-serif;
+            color: var(--dark);
+            line-height: 1;
         }
 
-        .price-period {
+        .price-currency {
             font-size: 1rem;
             color: var(--text-gray);
-            margin-bottom: 30px;
         }
 
-        .price-features {
-            text-align: left;
+        .price-limit {
+            margin-top: 15px;
             margin-bottom: 30px;
-        }
-
-        .price-features li {
-            margin-bottom: 10px;
             font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            color: var(--text-gray);
+            display: block;
+        }
+        
+        .price-card.popular .price-limit {
+            color: rgba(255,255,255,0.7);
         }
 
-        .price-features span.material-icons-outlined {
-            color: #4caf50;
-            font-size: 18px;
-        }
-
-        /* CTA SECTION */
-        .cta-section {
-            background: var(--primary-orange);
-            padding: 80px 0;
+        /* --- CTA --- */
+        .cta {
             text-align: center;
-            color: white;
+            background: linear-gradient(135deg, #FFF5EB 0%, #FFFFFF 100%);
         }
 
-        .cta-box {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .cta-box h2 {
+        .cta h2 {
             font-size: 3rem;
             margin-bottom: 20px;
-            color: white;
         }
 
-        .cta-box p {
+        .cta p {
             font-size: 1.2rem;
+            color: var(--text-gray);
             margin-bottom: 40px;
-            opacity: 0.9;
         }
 
-        .cta-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .btn-white {
-            background: white;
-            color: var(--primary-orange);
-        }
-        
-        .btn-white:hover {
-            background: #f0f0f0;
-            transform: translateY(-2px);
-        }
-
-        .btn-outline-white {
-            border: 2px solid white;
-            color: white;
-        }
-        
-        .btn-outline-white:hover {
-            background: rgba(255,255,255,0.1);
-            color: white;
-        }
-
-        /* FOOTER */
+        /* --- Footer --- */
         footer {
-            background: var(--bg-black);
-            color: #666;
-            padding: 60px 0 20px;
-            border-top: 5px solid var(--primary-orange);
+            background: var(--dark);
+            color: var(--white);
+            padding: 60px 0;
+            text-align: center;
         }
 
-        .footer-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 40px;
-            margin-bottom: 40px;
-        }
-
-        .footer-col h4 {
-            color: white;
+        .footer-logo {
             margin-bottom: 20px;
-            font-size: 1.2rem;
+            opacity: 0.8;
         }
-
-        .footer-col ul li {
-            margin-bottom: 10px;
-        }
-
-        .footer-col ul li a:hover {
-            color: var(--primary-orange);
-        }
-
+        
         .footer-logo img {
-            height: 40px;
-            margin-bottom: 20px;
-            filter: grayscale(100%) brightness(200%); /* Делаем лого белым */
+            height: 30px;
+            filter: brightness(0) invert(1); /* Make logo white */
         }
 
         .copyright {
-            text-align: center;
-            padding-top: 20px;
-            border-top: 1px solid #333;
+            color: #666;
             font-size: 0.9rem;
         }
 
-        /* MEDIA QUERIES */
-        @media (max-width: 992px) {
-            .hero-grid, .feature-row {
-                grid-template-columns: 1fr;
-                gap: 40px;
-            }
-            
-            .feature-row:nth-child(even) .feature-content { order: 1; }
-            .feature-row:nth-child(even) .feature-visual { order: 2; }
-            
-            .hero-text h1 { font-size: 2.5rem; }
-            
-            .price-card.popular { transform: scale(1); }
-        }
-
+        /* --- Mobile --- */
         @media (max-width: 768px) {
-            nav { display: none; } /* Упрощение для мобильных: скрываем меню */
-            .mobile-menu-btn { display: block; }
-            
-            .hero { padding: 60px 0; text-align: center; }
-            .hero-badges { justify-content: center; }
-            .hero-text p { margin: 0 auto 30px; }
-            
-            .cta-box h2 { font-size: 2rem; }
-            
-            .header-content { padding: 0 10px; }
+            .hero h1 { font-size: 2.5rem; }
+            h2 { font-size: 2rem; }
+            .feature-item.reverse { direction: ltr; text-align: left; }
+            .feature-item.reverse .feature-text { text-align: left; }
+            .price-card.popular { transform: scale(1); }
+            .price-card.popular:hover { transform: scale(1.03); }
         }
     </style>
 </head>
@@ -729,384 +436,189 @@
 
     <!-- Header -->
     <header>
-        <div class="container header-content">
-            <a href="#" class="logo">
-                <!-- Ссылка на ваш логотип в репозитории -->
-                <img src="Easy-учёт лого сайт.svg" alt="easy-учёт логотип">
-            </a>
-            <nav>
-                <ul>
-                    <li><a href="#problems">Проблемы</a></li>
-                    <li><a href="#features">Возможности</a></li>
-                    <li><a href="#pricing">Тарифы</a></li>
-                    <li><a href="#contact">Контакты</a></li>
-                </ul>
-            </nav>
-            <a href="https://easy-uchet.ru/register" class="btn btn-primary" style="padding: 10px 20px; font-size: 0.9rem;">Войти</a>
-            <span class="material-icons-outlined mobile-menu-btn">menu</span>
+        <div class="container nav-wrapper">
+            <div class="logo">
+                <!-- Ссылка на логотип в вашем репозитории -->
+                <img src="Easy-учёт лого сайт.svg" alt="easy-учёт">
+            </div>
+            <a href="#start" class="btn">Попробовать бесплатно</a>
         </div>
     </header>
 
-    <!-- Hero Section (Attention) -->
+    <!-- Hero Section -->
     <section class="hero">
-        <div class="container hero-grid">
-            <div class="hero-text">
-                <div class="hero-badges">
-                    <div class="badge"><span class="material-icons-outlined">check_circle</span> Старт 0 ₽</div>
-                    <div class="badge"><span class="material-icons-outlined">smartphone</span> Работа с телефона</div>
-                </div>
-                <h1>Порядок в разборке <br><span>без бухгалтера и 1С</span></h1>
-                <p>Найдите деталь за 5 секунд, узнайте её реальную цену и выставите на Авито в один клик. Сервис для тех, кто работает руками, а не в офисе.</p>
-                <div style="display: flex; gap: 15px; flex-wrap: wrap; justify-content: flex-start;">
-                    <a href="https://easy-uchet.ru/register" class="btn btn-primary">Попробовать бесплатно</a>
-                    <a href="#features" class="btn btn-outline">Как это работает?</a>
-                </div>
+        <div class="container">
+            <h1 class="reveal">Порядок в разборке<br><span class="highlight">без бухгалтера и 1С</span></h1>
+            <p class="reveal stagger-delay">Облачный сервис для маленьких разборок. Ведите учёт машин, деталей и продаж прямо с телефона в гараже.</p>
+            <div class="reveal stagger-delay">
+                <a href="#start" class="btn" style="padding: 18px 40px; font-size: 1.1rem;">Начать бесплатно</a>
+                <p style="margin-top: 15px; font-size: 0.9rem; color: #999;">Месяц тарифа Pro в подарок • Карта не нужна</p>
             </div>
-            <div class="hero-image">
-                <div class="hero-mockup">
-                    <div class="mockup-ui">
-                        <div class="mockup-header">
-                            <div class="mockup-dot" style="background:#ff5f57"></div>
-                            <div class="mockup-dot" style="background:#febc2e"></div>
-                            <div class="mockup-dot" style="background:#28c840"></div>
-                        </div>
-                        <div class="mockup-body">
-                            <div class="mockup-sidebar"></div>
-                            <div class="mockup-content">
-                                <div class="mockup-card">
-                                    <div class="mockup-card-img"></div>
-                                    <div class="mockup-card-info">
-                                        <div class="mockup-line"></div>
-                                        <div class="mockup-line short"></div>
-                                    </div>
-                                    <div class="price-tag">15 000 ₽</div>
-                                </div>
-                                <div class="mockup-card">
-                                    <div class="mockup-card-img"></div>
-                                    <div class="mockup-card-info">
-                                        <div class="mockup-line"></div>
-                                        <div class="mockup-line short"></div>
-                                    </div>
-                                    <div class="price-tag">8 500 ₽</div>
-                                </div>
-                                <div class="mockup-card">
-                                    <div class="mockup-card-img"></div>
-                                    <div class="mockup-card-info">
-                                        <div class="mockup-line"></div>
-                                        <div class="mockup-line short"></div>
-                                    </div>
-                                    <div class="price-tag">22 000 ₽</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            
+            <div class="hero-image reveal stagger-delay">
+                <!-- Заглушка интерфейса. В идеале замените src на скриншот вашего демо -->
+                <img src="https://placehold.co/1200x600/F4F4F4/111111?text=Интерфейс+easy-учёт" alt="Интерфейс сервиса">
             </div>
         </div>
     </section>
 
-    <!-- Pain Points (Interest) -->
-    <section id="problems" class="pain-section">
+    <!-- Problems -->
+    <section class="problems">
         <div class="container">
-            <div class="section-header">
-                <h2>Знакомые ситуации?</h2>
-                <p>Вы не одиноки. 90% разборок теряют деньги из-за хаоса в учете.</p>
-            </div>
-            <div class="pain-grid">
-                <div class="pain-card">
-                    <span class="material-icons-outlined pain-icon">search_off</span>
+            <h2 class="reveal">Знакомые ситуации?</h2>
+            <div class="problems-grid">
+                <div class="problem-card reveal stagger-delay">
+                    <span class="material-icons-outlined problem-icon">search_off</span>
                     <h3>«Где эта деталь?»</h3>
-                    <p>Клиент звонит, а вы бегаете по гаражу 20 минут, пытаясь вспомнить, куда положили генератор от Focus 2. Или вообще говорите «не знаю».</p>
+                    <p>Клиент звонит, а вы не помните, где лежит генератор и от какой он машины. Поиск занимает часы.</p>
                 </div>
-                <div class="pain-card">
-                    <span class="material-icons-outlined pain-icon">psychology_alt</span>
+                <div class="problem-card reveal stagger-delay">
+                    <span class="material-icons-outlined problem-icon">question_mark</span>
                     <h3>Путаница в названиях</h3>
-                    <p>Один называет «телевизор», другой «рамка радиатора», третий «панель». Поиск в тетрадке или Excel не работает, детали теряются.</p>
+                    <p>«Телевизор», «рамка», «панель» — это одно и то же. В тетрадке поиск по ним не работает.</p>
                 </div>
-                <div class="pain-card">
-                    <span class="material-icons-outlined pain-icon">money_off</span>
+                <div class="problem-card reveal stagger-delay">
+                    <span class="material-icons-outlined problem-icon">trending_down</span>
                     <h3>Продешевил или завис?</h3>
-                    <p>Поставили цену «на глаз». Либо продали за копейки то, что стоило дорого, либо деталь висит год, потому что цена завышена.</p>
-                </div>
-                <div class="pain-card">
-                    <span class="material-icons-outlined pain-icon">block</span>
-                    <h3>Сложные программы</h3>
-                    <p>Пробовали «взрослый» софт? Там нужно учиться неделю, интерфейс из 2005 года, и стоит он как хороший б/у мотор.</p>
+                    <p>Нет понимания рыночной цены. Либо теряете прибыль, либо деталь висит годами без движения.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Killer Features (Desire) -->
-    <section id="features" class="features-section">
+    <!-- Killer Features -->
+    <section class="features">
         <div class="container">
-            <div class="section-header">
-                <h2>Почему выбирают easy-учёт</h2>
-                <p>Мы убрали всё лишнее и оставили только то, что приносит деньги.</p>
-            </div>
-
-            <!-- Feature 1 -->
-            <div class="feature-row">
-                <div class="feature-content">
-                    <span class="feature-number">01</span>
-                    <h3>Поиск, который понимает синонимы</h3>
-                    <p>Встроенный умный справочник. Вы вводите «телевизор», а система находит «рамку радиатора», «панель переднюю» и «морду». Клиент ждет на линии всего 5 секунд.</p>
-                    <ul class="feature-list">
-                        <li><span class="material-icons-outlined">check</span> Понимает народные названия и официальные термины</li>
-                        <li><span class="material-icons-outlined">check</span> Ищет по OEM номерам и артикулам</li>
-                        <li><span class="material-icons-outlined">check</span> Мгновенный результат прямо с телефона</li>
-                    </ul>
+            <h2 class="reveal">Почему выбирают easy-учёт</h2>
+            
+            <div class="features-grid">
+                <!-- Feature 1 -->
+                <div class="feature-item reveal stagger-delay">
+                    <div class="feature-visual visual-scan"></div>
+                    <div class="feature-text">
+                        <h3>Поиск по синонимам</h3>
+                        <p>Сервис понимает, что «телевизор» и «рамка радиатора» — это одно и то же. Находит деталь за секунды по любому названию или номеру.</p>
+                    </div>
                 </div>
-                <div class="feature-visual">
-                    <div class="visual-search">
-                        <div style="font-weight:bold; margin-bottom:10px; color:#333;">Поиск детали:</div>
-                        <div class="search-bar">
-                            <span class="material-icons-outlined" style="color:#666">search</span>
-                            <div class="search-input"></div>
-                        </div>
-                        <div style="font-size:0.8rem; color:#666; margin-bottom:5px;">Система нашла совпадения:</div>
-                        <div class="synonyms">
-                            <span class="syn-tag match">Рамка радиатора</span>
-                            <span class="syn-tag match">Телевизор</span>
-                            <span class="syn-tag match">Панель передняя</span>
-                            <span class="syn-tag">Support radiator</span>
-                        </div>
+
+                <!-- Feature 2 -->
+                <div class="feature-item reverse reveal stagger-delay">
+                    <div class="feature-visual visual-price"></div>
+                    <div class="feature-text">
+                        <h3>Умная цена</h3>
+                        <p>Подсказывает стоимость новых аналогов (Berg, Автопитер) прямо в карточке. Выставляйте цену правильно сразу, чтобы быстро продать.</p>
+                    </div>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="feature-item reveal stagger-delay">
+                    <div class="feature-visual visual-avito"></div>
+                    <div class="feature-text">
+                        <h3>Продажи везде</h3>
+                        <p>Выгрузка на Avito и Drom + свой сайт-витрина в пару кликов. Занесли деталь один раз — она продается на всех площадках.</p>
                     </div>
                 </div>
             </div>
-
-            <!-- Feature 2 -->
-            <div class="feature-row">
-                <div class="feature-content">
-                    <span class="feature-number">02</span>
-                    <h3>Честная цена прямо в карточке</h3>
-                    <p>Не гадайте, сколько стоит деталь. Система показывает цены на новые аналоги на крупных площадках (Berg, Автопитер). Выставляйте цену выгодно и быстро.</p>
-                    <ul class="feature-list">
-                        <li><span class="material-icons-outlined">check</span> Видите рынок, а не пальцем в небо</li>
-                        <li><span class="material-icons-outlined">check</span> Не продешевите при срочной продаже</li>
-                        <li><span class="material-icons-outlined">check</span> Обоснуйте цену клиенту цифрами</li>
-                    </ul>
-                </div>
-                <div class="feature-visual">
-                    <div class="visual-price">
-                        <div class="part-card-mini">
-                            <div style="height:60px; background:#eee; margin-bottom:10px; border-radius:4px;"></div>
-                            <div style="font-weight:bold; font-size:0.9rem;">Генератор Toyota Camry</div>
-                            <div class="price-compare">
-                                <span>Новые от:</span>
-                                <span class="market-price">25 000 ₽</span>
-                            </div>
-                            <div class="price-compare">
-                                <span>Ваша цена:</span>
-                                <span class="our-price">18 000 ₽</span>
-                            </div>
-                        </div>
-                        <div style="display:flex; align-items:center; justify-content:center; color:#666; font-size:0.8rem; text-align:center;">
-                            Данные актуальны на сегодня<br>из оптовых баз
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Feature 3 -->
-            <div class="feature-row">
-                <div class="feature-content">
-                    <span class="feature-number">03</span>
-                    <h3>Продажи везде одновременно</h3>
-                    <p>Загрузили фото и описание один раз — и деталь уже продается на вашем сайте, на Авито и Дроме. Не нужно тратить часы на ручное создание объявлений.</p>
-                    <ul class="feature-list">
-                        <li><span class="material-icons-outlined">check</span> Свой сайт-витрина включается за 2 минуты</li>
-                        <li><span class="material-icons-outlined">check</span> Автовыгрузка на популярные площадки</li>
-                        <li><span class="material-icons-outlined">check</span>统一管理 остатков: продал на Авито — снялось с сайта</li>
-                    </ul>
-                </div>
-                <div class="feature-visual">
-                     <div style="background:white; padding:20px; border-radius:8px; color:black; display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; text-align:center;">
-                        <div style="background:#00AAFF; color:white; padding:10px; border-radius:4px; font-weight:bold; font-size:0.8rem;">Avito</div>
-                        <div style="background:#28c840; color:white; padding:10px; border-radius:4px; font-weight:bold; font-size:0.8rem;">Сайт</div>
-                        <div style="background:#333; color:white; padding:10px; border-radius:4px; font-weight:bold; font-size:0.8rem;">Drom</div>
-                        <div style="grid-column: span 3; margin-top:10px; border:2px dashed #ccc; padding:10px; border-radius:4px; color:#666; font-size:0.8rem;">
-                            Загружено 1 раз → Продается везде
-                        </div>
-                     </div>
-                </div>
-            </div>
-
         </div>
     </section>
 
-    <!-- All Features Grid -->
+    <!-- All Features List -->
     <section class="all-features">
         <div class="container">
-            <div class="section-header">
-                <h2>И это ещё не всё</h2>
-                <p>Полный набор инструментов для маленькой и средней разборки</p>
-            </div>
-            <div class="features-grid">
-                <div class="mini-feature">
-                    <h4><span class="material-icons-outlined">directions_car</span> Учёт машин</h4>
-                    <p>Привязка деталей к донору: марка, модель, VIN, год. История автомобиля.</p>
-                </div>
-                <div class="mini-feature">
-                    <h4><span class="material-icons-outlined">local_offer</span> Наклейки и штрихкоды</h4>
-                    <p>Печать этикеток с крупным номером. Сканируете телефоном — открывает карточку.</p>
-                </div>
-                <div class="mini-feature">
-                    <h4><span class="material-icons-outlined">receipt_long</span> Документы</h4>
-                    <p>Печать чеков, гарантийных талонов и договоров купли-продажи в один клик.</p>
-                </div>
-                <div class="mini-feature">
-                    <h4><span class="material-icons-outlined">inventory_2</span> Склады и инвентаризация</h4>
-                    <p>Несколько локаций, быстрый пересчет, выявление недостачи и лишнего.</p>
-                </div>
-                <div class="mini-feature">
-                    <h4><span class="material-icons-outlined">bar_chart</span> Отчёты для владельца</h4>
-                    <p>Графики выручки, прибыльность категорий, эффективность сотрудников.</p>
-                </div>
-                <div class="mini-feature">
-                    <h4><span class="material-icons-outlined">people</span> Сотрудники и роли</h4>
-                    <p>Доступ по ссылке. Владелец видит деньги, кладовщик — только склад.</p>
-                </div>
-                <div class="mini-feature">
-                    <h4><span class="material-icons-outlined">upload_file</span> Импорт из Excel</h4>
-                    <p>Переезд без боли. Загрузите старую базу файлом, не нужно вбивать вручную.</p>
-                </div>
-                <div class="mini-feature">
-                    <h4><span class="material-icons-outlined">history</span> История действий</h4>
-                    <p>Видно, кто и когда менял цену, статус детали или удалял запись.</p>
-                </div>
+            <h2 class="reveal">Всё необходимое для работы</h2>
+            <div class="features-list reveal stagger-delay">
+                <div class="f-item"><span class="material-icons-outlined">inventory_2</span><p>Учёт машин и VIN</p></div>
+                <div class="f-item"><span class="material-icons-outlined">qr_code_scanner</span><p>Штрихкоды и наклейки</p></div>
+                <div class="f-item"><span class="material-icons-outlined">receipt_long</span><p>Печать чеков и договоров</p></div>
+                <div class="f-item"><span class="material-icons-outlined">people</span><p>Склад и сотрудники</p></div>
+                <div class="f-item"><span class="material-icons-outlined">bar_chart</span><p>Отчёты по прибыли</p></div>
+                <div class="f-item"><span class="material-icons-outlined">cloud_upload</span><p>Импорт из Excel</p></div>
+                <div class="f-item"><span class="material-icons-outlined">smartphone</span><p>Работа с телефона</p></div>
+                <div class="f-item"><span class="material-icons-outlined">history</span><p>История действий</p></div>
             </div>
         </div>
     </section>
 
-    <!-- Pricing (Action) -->
-    <section id="pricing" class="pricing-section">
+    <!-- Pricing -->
+    <section class="pricing">
         <div class="container">
-            <div class="section-header">
-                <h2>Простые тарифы</h2>
-                <p>Платите только за размер базы. Старт — бесплатно.</p>
-            </div>
+            <h2 class="reveal">Честные тарифы</h2>
             <div class="pricing-grid">
                 <!-- Free -->
-                <div class="price-card">
-                    <div class="price-title">Бесплатный</div>
-                    <div class="price-limit">До 100 деталей</div>
+                <div class="price-card reveal stagger-delay">
+                    <span class="plan-name">Старт</span>
                     <div class="price-amount">0 ₽</div>
-                    <div class="price-period">навсегда</div>
-                    <ul class="price-features">
-                        <li><span class="material-icons-outlined">check</span> Полный функционал</li>
-                        <li><span class="material-icons-outlined">check</span> 1 пользователь</li>
-                        <li><span class="material-icons-outlined">check</span> Базовые отчеты</li>
-                    </ul>
-                    <a href="https://easy-uchet.ru/register" class="btn btn-black" style="width:100%">Начать</a>
+                    <span class="price-currency">навсегда</span>
+                    <span class="price-limit">до 100 деталей</span>
+                    <a href="#start" class="btn btn-outline" style="width:100%">Попробовать</a>
                 </div>
 
-                <!-- Start -->
-                <div class="price-card">
-                    <div class="price-title">Старт</div>
-                    <div class="price-limit">До 3 000 деталей</div>
-                    <div class="price-amount">990 ₽</div>
-                    <div class="price-period">в месяц</div>
-                    <ul class="price-features">
-                        <li><span class="material-icons-outlined">check</span> Всё из бесплатного</li>
-                        <li><span class="material-icons-outlined">check</span> До 3 пользователей</li>
-                        <li><span class="material-icons-outlined">check</span> Приоритетная поддержка</li>
-                    </ul>
-                    <a href="https://easy-uchet.ru/register" class="btn btn-outline" style="width:100%; color:#333; border-color:#ccc">Выбрать</a>
-                </div>
-
-                <!-- Growth (Popular) -->
-                <div class="price-card popular">
-                    <div class="popular-badge">Выбор разборок</div>
-                    <div class="price-title">Рост</div>
-                    <div class="price-limit">До 10 000 деталей</div>
+                <!-- Popular -->
+                <div class="price-card popular reveal stagger-delay">
+                    <div class="badge">Выбор разборок</div>
+                    <span class="plan-name">Рост</span>
                     <div class="price-amount">1 990 ₽</div>
-                    <div class="price-period">в месяц</div>
-                    <ul class="price-features">
-                        <li><span class="material-icons-outlined">check</span> Безлимитные пользователи</li>
-                        <li><span class="material-icons-outlined">check</span> Расширенные отчеты</li>
-                        <li><span class="material-icons-outlined">check</span> Интеграции с площадками</li>
-                        <li><span class="material-icons-outlined">check</span> Помощь в переносе базы</li>
-                    </ul>
-                    <a href="https://easy-uchet.ru/register" class="btn btn-primary" style="width:100%">Попробовать Pro</a>
+                    <span class="price-currency">в месяц</span>
+                    <span class="price-limit">до 10 000 деталей</span>
+                    <a href="#start" class="btn" style="background:var(--white); color:var(--dark); border:none; width:100%">Начать сейчас</a>
                 </div>
 
                 <!-- Pro -->
-                <div class="price-card">
-                    <div class="price-title">Профи</div>
-                    <div class="price-limit">До 30 000 деталей</div>
+                <div class="price-card reveal stagger-delay">
+                    <span class="plan-name">Профи</span>
                     <div class="price-amount">3 990 ₽</div>
-                    <div class="price-period">в месяц</div>
-                    <ul class="price-features">
-                        <li><span class="material-icons-outlined">check</span> Максимальная скорость</li>
-                        <li><span class="material-icons-outlined">check</span> Персональный менеджер</li>
-                        <li><span class="material-icons-outlined">check</span> API доступ</li>
-                    </ul>
-                    <a href="https://easy-uchet.ru/register" class="btn btn-outline" style="width:100%; color:#333; border-color:#ccc">Выбрать</a>
+                    <span class="price-currency">в месяц</span>
+                    <span class="price-limit">до 30 000 деталей</span>
+                    <a href="#start" class="btn btn-outline" style="width:100%">Выбрать</a>
                 </div>
             </div>
-            
-            <div style="text-align: center; margin-top: 40px; background: #e3f2fd; padding: 20px; border-radius: 12px; display: inline-block; width: 100%; max-width: 600px;">
-                <p style="color: #0d47a1; font-weight: 600; margin:0;">
-                    <span class="material-icons-outlined" style="vertical-align: middle; color: #0d47a1;">gift</span>
-                    Месяц тарифа «Профи» бесплатно всем новым пользователям + бесплатный перенос базы из Excel!
-                </p>
-            </div>
+            <p style="text-align:center; margin-top:40px; color:#666;">
+                🎁 Месяц тарифа <b>Профи</b> бесплатно всем новым пользователям.<br>
+                🚚 Бесплатно перенесем вашу базу из Excel или другого сервиса.
+            </p>
         </div>
     </section>
 
-    <!-- CTA Final -->
-    <section class="cta-section">
-        <div class="container cta-box">
-            <h2>Хватит терять детали и деньги</h2>
-            <p>Зарегистрируйтесь сейчас, заведите первые 100 деталей бесплатно и оцените порядок в своём бизнесе.</p>
-            <div class="cta-buttons">
-                <a href="https://easy-uchet.ru/register" class="btn btn-white">Создать аккаунт</a>
-                <a href="https://easy-uchet.ru/demo" class="btn btn-outline-white">Смотреть демо</a>
-            </div>
+    <!-- CTA -->
+    <section class="cta" id="start">
+        <div class="container">
+            <h2 class="reveal">Наведите порядок сегодня</h2>
+            <p class="reveal stagger-delay">Первые 30 дней — полный функционал бесплатно. Регистрация за 1 минуту.</p>
+            <a href="https://easy-uchet.ru" class="btn reveal stagger-delay" style="font-size: 1.2rem; padding: 20px 50px;">Зарегистрироваться</a>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer id="contact">
+    <footer>
         <div class="container">
-            <div class="footer-grid">
-                <div class="footer-col footer-logo">
-                    <img src="Easy-учёт лого сайт.svg" alt="easy-учёт">
-                    <p>Облачный сервис учёта для авторазборок. Просто, быстро, выгодно.</p>
-                </div>
-                <div class="footer-col">
-                    <h4>Продукт</h4>
-                    <ul>
-                        <li><a href="#features">Возможности</a></li>
-                        <li><a href="#pricing">Тарифы</a></li>
-                        <li><a href="#">Истории успеха</a></li>
-                        <li><a href="#">Обновления</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Поддержка</h4>
-                    <ul>
-                        <li><a href="#">База знаний</a></li>
-                        <li><a href="#">Как начать работу</a></li>
-                        <li><a href="#">Импорт из Excel</a></li>
-                        <li><a href="mailto:support@easy-uchet.ru">support@easy-uchet.ru</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Контакты</h4>
-                    <ul>
-                        <li>Telegram: @easy_uchet_support</li>
-                        <li>WhatsApp: +7 (999) 000-00-00</li>
-                        <li>Сайт: easy-uchet.ru</li>
-                    </ul>
-                </div>
+            <div class="footer-logo">
+                <img src="Easy-учёт лого сайт.svg" alt="easy-учёт">
             </div>
-            <div class="copyright">
-                &copy; 2024 easy-учёт. Все права защищены.
-            </div>
+            <p class="copyright">© 2023 easy-учёт. Сервис для маленьких разборок.</p>
         </div>
     </footer>
 
+    <!-- Script for Animations -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const reveals = document.querySelectorAll('.reveal');
+
+            const revealOnScroll = () => {
+                const windowHeight = window.innerHeight;
+                const elementVisible = 100;
+
+                reveals.forEach((reveal) => {
+                    const elementTop = reveal.getBoundingClientRect().top;
+                    if (elementTop < windowHeight - elementVisible) {
+                        reveal.classList.add('active');
+                    }
+                });
+            };
+
+            window.addEventListener('scroll', revealOnScroll);
+            // Trigger once on load
+            revealOnScroll();
+        });
+    </script>
 </body>
 </html>
